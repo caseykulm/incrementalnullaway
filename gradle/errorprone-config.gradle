@@ -1,0 +1,55 @@
+// Refer to https://github.com/uber/NullAway for NullAway Plugin information
+// Refer to http://errorprone.info/ for ErrorProne information
+
+// Add new packages to this list. For each package added, all sub-packages will be validated as well
+def nullSafePackages = [
+        "com.caseykulm.incnullaway.unsafe.safe"
+]
+def nullSafePackagesStr = nullSafePackages.join(',')
+
+// Add subpackages of validated packages that we want to ignore to this list.
+def notNullSafeSubpackages = [
+
+]
+def notNullSafeSubpackagesStr = notNullSafeSubpackages.join(',')
+
+tasks.withType(JavaCompile) {
+    def isTestProject = name.toLowerCase().contains("test")
+
+    if (!isTestProject) {
+        // Settings for non-test code
+        options.compilerArgs += [
+                "-XepExcludedPaths:.*/build/generated/.*", // Don't check built files (Dagger generated code can be problematic otherwise)
+
+                "-Xep:NullAway:ERROR", // Fail build if nullable fields are not handled
+                "-XepOpt:NullAway:AnnotatedPackages=" + nullSafePackagesStr, // which packages are currently validated
+                "-XepOpt:NullAway:UnannotatedSubPackages=" + notNullSafeSubpackagesStr, // which subpackages in the validated packages above to ignore
+                "-XepOpt:NullAway:ExcludedFieldAnnotations=javax.inject.Inject,butterknife", // Don't check fields with Dagger @Inject and Butterknife @BindView annotations, so we don't have to null check them
+
+                "-Xep:IdentityBinaryExpression:OFF",
+                "-Xep:RestrictTo:OFF",
+                "-Xep:MissingOverride:OFF",
+                "-Xep:ImmutableEnumChecker:OFF",
+                "-Xep:FutureReturnValueIgnored:OFF",
+                "-Xep:ClassNewInstance:OFF",
+                "-Xep:DefaultCharset:OFF",
+                "-Xep:HidingField:OFF",
+                "-Xep:Finally:OFF",
+                "-Xep:WaitNotInLoop:OFF",
+                "-Xep:MissingCasesInEnumSwitch:OFF",
+                "-Xep:DefaultCharset:OFF",
+                "-Xep:UnsynchronizedOverridesSynchronized:OFF",
+                "-Xep:ClassCanBeStatic:OFF",
+                "-Xep:ArgumentSelectionDefectChecker:OFF",
+                "-Xep:NarrowingCompoundAssignment:OFF",
+                "-Xep:JdkObsolete:OFF",
+                "-Xep:IntLongMath:OFF",
+                "-Xep:ShortCircuitBoolean:OFF",
+                "-Xep:BoxedPrimitiveConstructor:OFF",
+                "-Xep:FloatCast:OFF"
+        ]
+    } else {
+        // Settings for test code
+        options.compilerArgs += ["-XepDisableAllChecks"] // Disable all errorprone checks
+    }
+}
