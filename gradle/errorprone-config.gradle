@@ -3,7 +3,7 @@
 
 // Add new packages to this list. For each package added, all sub-packages will be validated as well
 def nullSafePackages = [
-        "com.caseykulm.incnullaway.unsafe.safe"
+        "com.caseykulm.incnullaway.foo"
 ]
 def nullSafePackagesStr = nullSafePackages.join(',')
 
