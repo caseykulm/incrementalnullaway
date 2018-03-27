@@ -44,9 +44,9 @@ public class Bar {
 In the above code examples, if `bar.useFoo()` is called, then the NPE will show 
 `com.foo` as the package where it happened. Adding `com.foo` to NullAway will still 
 allow the problem to happen though since the actual source is `com.bar.Bar`, so the 
-solution is to add `com.bar` to NullAway. 
+solution is to add both `com.foo` and `com.bar` to NullAway. 
 
-The reason this exists is that packages listed in NullAway assume that everything is 
+The reason this exists is that a package listed in NullAway assumes that everything is 
 `@NonNull` by default, and therefore that each value passed to it by some other 
 package will be `@NonNull`. 
 
